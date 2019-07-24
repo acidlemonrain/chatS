@@ -5,14 +5,18 @@ module.exports = function(io) {
 	io.on('connection', function(socket) {
 		//log in
 		require('./login')(socket, userlist, msgs, io);
-		// log out
-		socket.on('disconnect', function(id, id2) {
+		//log out
+		socket.on('disconnect', function() {
 			userlist = userlist.filter((ele) => {
 				return ele.id != socket.id;
 			});
+			msgs = msgs.filter((ele) => {
+				return ele.socketid != socket.id;
+			});
 			io.emit('shake', {
 				sum: userlist.length,
-				userlist: userlist
+				userlist: userlist,
+				msgs: msgs
 			});
 		});
 		//聊天监听
